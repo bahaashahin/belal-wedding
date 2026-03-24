@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaMapMarkerAlt, FaClock, FaEnvelope } from "react-icons/fa";
 import Confetti from "react-confetti";
 import backgroundImg from "./assets/wedding-bg.jpg";
+import coupleImg from "./assets/couple.jpeg"; // صورة العروسين
 import weddingAudio from "./assets/wedding-sound.mp3";
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#b08968] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h1 className="text-white text-xl animate-pulse">
-            Loading Wedding 🎉
+            Loading Engagement 🎉
           </h1>
         </div>
       </div>
@@ -66,7 +67,14 @@ function App() {
       />
 
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center px-4 py-20">
+      <section className="relative flex flex-col items-center justify-center px-4 py-20">
+        {/* صورة العروسين */}
+        <img
+          src={coupleImg}
+          alt="Couple"
+          className="w-48 md:w-64 rounded-full shadow-2xl mb-6 animate-pulse-btn"
+        />
+
         {/* Floating lights */}
         <div className="absolute inset-0">
           {[...Array(20)].map((_, i) => (
@@ -93,7 +101,7 @@ function App() {
             Salma
           </h1>
           <p className="text-lg md:text-2xl mb-2">
-            You're Invited to Our Wedding
+            You're Invited to Our Engagement
           </p>
           <p className="text-md md:text-lg mb-6">2 April 2026</p>
           <a
@@ -131,18 +139,28 @@ function App() {
         </section>
       )}
 
-      {/* Wedding Details in Box */}
+      {/* Engagement Details in Box */}
       <section className="py-12 px-4 flex flex-col items-center gap-8 relative z-10">
         <div className="bg-[#9c6644]/90 p-6 md:p-10 rounded-2xl text-center text-white max-w-md w-full shadow-2xl">
-          <h2 className="text-3xl font-bold mb-4 text-[#ede0d4]">
-            Wedding Details
+          <h2 className="text-3xl font-bold text-[#ede0d4] mb-5">
+            Engagement Details
           </h2>
-          <p className="text-lg flex items-center justify-center gap-2 mb-2">
-            <FaMapMarkerAlt /> Crystal Hall, Heliopolis, Cairo
+
+          {/* Icon next to bold text */}
+          <p className="flex items-center justify-center text-lg mb-1 gap-2">
+            <FaMapMarkerAlt className="text-2xl" />
+            <span className="font-bold">Riviera Hall - Alharm</span>
           </p>
+
+          {/* Subtitle below */}
+          <p className="text-lg mb-4">at the Pyramids Palace Officers Club</p>
+
+          {/* Time */}
           <p className="text-lg flex items-center justify-center gap-2 mb-4">
             <FaClock /> 7:00 PM
           </p>
+
+          {/* Map Button */}
           <a
             href="https://maps.app.goo.gl/EG16MKqhCPWsds969?g_st=ac"
             target="_blank"
