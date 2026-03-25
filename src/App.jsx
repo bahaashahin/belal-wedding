@@ -4,6 +4,7 @@ import {
   FaClock,
   FaEnvelope,
   FaVolumeUp,
+  FaVolumeMute,
 } from "react-icons/fa";
 import Confetti from "react-confetti";
 import backgroundImg from "./assets/wedding-bg.jpg";
@@ -14,10 +15,11 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showTimer, setShowTimer] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [musicStarted, setMusicStarted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const audioRef = useRef(null);
 
-  // Loading only
+  // Loading screen
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -27,32 +29,38 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Timer
+  // Countdown timer
   useEffect(() => {
     const weddingDate = new Date(2026, 3, 2, 19, 0, 0).getTime();
+
     const interval = setInterval(() => {
       setTimeLeft(weddingDate - Date.now());
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
-  const playMusic = () => {
-    if (audioRef.current) {
-      audioRef.current
-        .play()
-        .then(() => {
-          setMusicStarted(true);
-        })
-        .catch((err) => {
-          console.log("Audio play failed:", err);
-        });
+  // Play / Pause audio
+  const toggleMusic = async () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.log("Audio play failed:", error);
+      }
     }
   };
 
-  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
-  const seconds = Math.floor((timeLeft / 1000) % 60);
+  const days = Math.max(0, Math.floor(timeLeft / (1000 * 60 * 60 * 24)));
+  const hours = Math.max(0, Math.floor((timeLeft / (1000 * 60 * 60)) % 24));
+  const minutes = Math.max(0, Math.floor((timeLeft / (1000 * 60)) % 60));
+  const seconds = Math.max(0, Math.floor((timeLeft / 1000) % 60));
 
   if (loading) {
     return (
@@ -74,16 +82,17 @@ function App() {
         <source src={weddingAudio} type="audio/mpeg" />
       </audio>
 
-      {/* Music Button */}
-      {!musicStarted && (
-        <button
-          onClick={playMusic}
-          className="fixed top-5 right-5 z-50 bg-[#a66940] text-white px-4 py-3 rounded-full shadow-lg hover:scale-105 transition"
-        >
-          <FaVolumeUp className="inline mr-2" />
-          Play Music
-        </button>
-      )}
+      {/* Fixed Music Button */}
+      <button
+        onClick={toggleMusic}
+        className="fixed top-5 right-5 z-50 bg-[#a66940] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition duration-300"
+      >
+        {isPlaying ? (
+          <FaVolumeUp className="text-2xl" />
+        ) : (
+          <FaVolumeMute className="text-2xl" />
+        )}
+      </button>
 
       {/* Background */}
       <div
@@ -115,7 +124,7 @@ function App() {
             <br />
             to join our
             <br />
-            <span className="font-bold">Engagment Party</span>
+            <span className="font-bold">Engagement Party</span>
           </p>
 
           <h1 className="font-heading text-4xl md:text-6xl font-bold text-[#f0e5d8] leading-tight mt-2">
@@ -141,6 +150,7 @@ function App() {
       {showTimer && (
         <section className="flex flex-col items-center py-10 gap-6">
           <div className="bg-[#a66940]/90 backdrop-blur-md px-6 py-6 rounded-2xl shadow-2xl flex flex-col items-center gap-6 max-w-xl w-full">
+            {/* Text above timer */}
             <div className="text-center text-white">
               <p className="text-lg md:text-xl leading-snug">
                 <span className="font-bold">The countdown begins</span>
@@ -149,7 +159,8 @@ function App() {
               </p>
             </div>
 
-            <div className="flex gap-4">
+            {/* Timer */}
+            <div className="flex gap-4 flex-wrap justify-center">
               {[
                 { label: "Days", value: days },
                 { label: "Hours", value: hours },
@@ -158,7 +169,7 @@ function App() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#f0e5d8] text-[#a66940] px-4 py-3 rounded-lg shadow-md flex flex-col items-center min-w-[60px]"
+                  className="bg-[#f0e5d8] text-[#a66940] px-4 py-3 rounded-lg shadow-md flex flex-col items-center min-w-[70px]"
                 >
                   <span className="text-lg md:text-xl font-bold">
                     {item.value}
@@ -203,12 +214,12 @@ function App() {
       </section>
 
       {/* Engagement Message Card */}
-      <section className="flex flex-col items-center py-6">
+      <section className="flex flex-col items-center py-6 pb-16">
         <div className="bg-[#a66940]/90 p-6 md:p-10 rounded-2xl text-center text-white max-w-md w-full shadow-2xl space-y-4">
           <p className="text-lg md:text-xl leading-snug">
             <span className="font-bold">Help us create our memories</span>
             <br />
-            <span className="font-bold">with a kind words</span>
+            <span className="font-bold">with kind words</span>
           </p>
 
           <a
@@ -248,4 +259,3 @@ function App() {
 }
 
 export default App;
-  
