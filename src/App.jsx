@@ -1,5 +1,10 @@
-import { useEffect, useState } from "react";
-import { FaMapMarkerAlt, FaClock, FaEnvelope } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
+import {
+  FaMapMarkerAlt,
+  FaClock,
+  FaEnvelope,
+  FaVolumeUp,
+} from "react-icons/fa";
 import Confetti from "react-confetti";
 import backgroundImg from "./assets/wedding-bg.jpg";
 import coupleImg from "./assets/couple.jpeg";
@@ -9,16 +14,17 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showTimer, setShowTimer] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [musicStarted, setMusicStarted] = useState(false);
+  const audioRef = useRef(null);
 
-  // Audio setup
+  // Loading only
   useEffect(() => {
-    const audio = new Audio(weddingAudio);
-    audio.loop = true;
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setLoading(false);
       setShowTimer(true);
-      audio.play().catch(() => console.log("Autoplay blocked"));
     }, 2500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Timer
@@ -29,6 +35,19 @@ function App() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const playMusic = () => {
+    if (audioRef.current) {
+      audioRef.current
+        .play()
+        .then(() => {
+          setMusicStarted(true);
+        })
+        .catch((err) => {
+          console.log("Audio play failed:", err);
+        });
+    }
+  };
 
   const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
@@ -50,6 +69,22 @@ function App() {
 
   return (
     <div className="relative font-sans min-h-screen overflow-x-hidden">
+      {/* Audio */}
+      <audio ref={audioRef} loop>
+        <source src={weddingAudio} type="audio/mpeg" />
+      </audio>
+
+      {/* Music Button */}
+      {!musicStarted && (
+        <button
+          onClick={playMusic}
+          className="fixed top-5 right-5 z-50 bg-[#a66940] text-white px-4 py-3 rounded-full shadow-lg hover:scale-105 transition"
+        >
+          <FaVolumeUp className="inline mr-2" />
+          Play Music
+        </button>
+      )}
+
       {/* Background */}
       <div
         className="fixed inset-0 bg-cover bg-center -z-10"
@@ -92,7 +127,9 @@ function App() {
             Salma
           </h1>
 
-          <p className="text-md md:text-lg text-[#f5f1ed] mt-2">2 April 2026</p>
+          <p className="text-md md:text-lg text-[#f5f1ed] mt-2">
+            Thursday 2 April 2026
+          </p>
           <p className="text-md md:text-lg text-[#f5f1ed]">
             Don't forget to drink your{" "}
             <span className="font-bold">عصير العنب</span> before you come. 🍇
@@ -100,11 +137,10 @@ function App() {
         </div>
       </section>
 
-      {/* Countdown Timer Section inside box */}
+      {/* Countdown Timer Section */}
       {showTimer && (
         <section className="flex flex-col items-center py-10 gap-6">
           <div className="bg-[#a66940]/90 backdrop-blur-md px-6 py-6 rounded-2xl shadow-2xl flex flex-col items-center gap-6 max-w-xl w-full">
-            {/* Text above timer */}
             <div className="text-center text-white">
               <p className="text-lg md:text-xl leading-snug">
                 <span className="font-bold">The countdown begins</span>
@@ -113,7 +149,6 @@ function App() {
               </p>
             </div>
 
-            {/* Timer */}
             <div className="flex gap-4">
               {[
                 { label: "Days", value: days },
@@ -170,14 +205,12 @@ function App() {
       {/* Engagement Message Card */}
       <section className="flex flex-col items-center py-6">
         <div className="bg-[#a66940]/90 p-6 md:p-10 rounded-2xl text-center text-white max-w-md w-full shadow-2xl space-y-4">
-          {/* Message Text */}
           <p className="text-lg md:text-xl leading-snug">
             <span className="font-bold">Help us create our memories</span>
             <br />
             <span className="font-bold">with a kind words</span>
           </p>
 
-          {/* Leave a Message Button */}
           <a
             href="https://forms.gle/Qxd7KyVpmESojyo88"
             target="_blank"
@@ -215,3 +248,4 @@ function App() {
 }
 
 export default App;
+  
