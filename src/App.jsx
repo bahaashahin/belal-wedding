@@ -199,7 +199,7 @@ function App() {
           </p>
 
           <p className="text-lg flex items-center justify-center gap-2 mb-4 text-[#f5f1ed]">
-            <FaClock /> 7:00 PM
+            <FaClock /> 6:00 PM
           </p>
 
           <a
