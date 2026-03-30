@@ -31,7 +31,7 @@ function App() {
 
   // Countdown timer
   useEffect(() => {
-    const weddingDate = new Date(2026, 3, 2, 19, 0, 0).getTime();
+    const weddingDate = new Date(2026, 3, 2, 18, 0, 0).getTime();
 
     const interval = setInterval(() => {
       setTimeLeft(weddingDate - Date.now());
